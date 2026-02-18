@@ -1,0 +1,7 @@
+- name: Instance and r53 rescords creation
+  hosts: all 
+  connection: ssh
+  tasks: 
+    - name: Instance creation
+      ansible.builtin.debug:
+        msg: "Creating the instances"
