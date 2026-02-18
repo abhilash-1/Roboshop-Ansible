@@ -47,7 +47,7 @@
       loop: "{{ec2-output.results}}"
       when: action == "create"
 
-    - name: Create r53 records
+    - name: Create r53 records for frontend
       amazon.aws.route53:
         state: present
         zone: "{{domain_name}}"
