@@ -1,7 +1,36 @@
 - name: Instance and r53 rescords creation
   hosts: all 
   connection: ssh
+  vars:
+    sg_id: sg-07afeb4dfbab74912
+    ami_id: ami-0220d79f3f480ecf5
+    env: Dev
+    action: create
+    instances:
+      - "mongodb"
+      - "catalogue"
   tasks: 
     - name: Instance creation
       ansible.builtin.debug:
         msg: "Creating the instances"
+      
+    - name: Instance
+      amazon.aws.ec2_instance:
+        instance_type: t3.micro
+        image_id: "{{ami_id}}"
+        security_group: "{{sg_id}}"
+        name: "{{item}}-{{env}}"
+        tags: 
+          Environment: Dev 
+          Project: Roboshop
+          Component: "{{item}}"
+          Name: "{{item}}-{{env}}"   
+      loop: "{{instances}}" 
+      register: ec2-output
+      when: action==create
+
+    - name: Printing ec2-output
+      ansible.builtin.debug:
+        msg: "{{ec2-output}}"
+
+
