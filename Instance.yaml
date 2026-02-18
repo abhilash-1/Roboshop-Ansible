@@ -44,7 +44,7 @@
         type: A
         overwrite: true
         wait: false
-      loop: "{{ec2-output.results}}"
+      loop: "{{ec2_output.results}}"
       when: action == "create"
 
     - name: Create r53 records for frontend
@@ -57,7 +57,7 @@
         type: A
         overwrite: true
         wait: false
-      loop: "{{ec2-output.results}}"
+      loop: "{{ec2_output.results}}"
       when: 
       - action == "create"
       - item.item == "frontend"
