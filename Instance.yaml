@@ -6,6 +6,7 @@
     ami_id: ami-0220d79f3f480ecf5
     env: Dev
     action: create
+    domain_name: 100pushups.online
     instances:
       - "mongodb"
       - "catalogue"
@@ -33,17 +34,37 @@
       ansible.builtin.debug:
         msg: "{{ec2_output}}"
 
-    - name: storing the output in variable
-      ansible.builtin.set_fact:
-        ec2_output1: "{{ec2_output}}"
+    - name: Create r53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{domain_name}}"
+        record: "{{item}}.{{item}}-{{env}}.{{domain_name}}"
+        value: "{{item}}.instance[0].private_ip_address"
+        ttl: 1
+        type: A
+        overwrite: true
+        wait: false
+      loop: "{{ec2-output.results}}"
+      when: action == "create"
 
-    
-    - name: Write ec2_output to local JSON file
-      ansible.builtin.copy:
-        content: "{{ ec2_output1 | to_nice_json }}"
-        dest: "./ec2_output.json"
-        mode: "0644"
-      delegate_to: localhost
-      run_once: true
+    - name: Create r53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{domain_name}}"
+        record: "{{item}}.{{item}}-{{env}}.{{domain_name}}"
+        value: "{{item}}.instance[0].public_ip_address"
+        ttl: 1
+        type: A
+        overwrite: true
+        wait: false
+      loop: "{{ec2-output.results}}"
+      when: 
+      - action == "create"
+      - item.item == "frontend"
+
+
+
+
+  
 
 
