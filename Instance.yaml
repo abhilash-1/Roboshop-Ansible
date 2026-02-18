@@ -21,16 +21,16 @@
         security_group: "{{sg_id}}"
         name: "{{item}}-{{env}}"
         tags: 
-          Environment: Dev 
+          Environment: "{{env}}" 
           Project: Roboshop
           Component: "{{item}}"
           Name: "{{item}}-{{env}}"   
       loop: "{{instances}}" 
-      register: ec2-output
+      register: ec2_output
       when: action == "create"
 
-    - name: Printing ec2-output
+    - name: Printing ec2_output
       ansible.builtin.debug:
-        msg: "{{ec2-output}}"
+        msg: "{{ec2_output}}"
 
 
