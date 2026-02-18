@@ -35,7 +35,7 @@
 
     - name: storing the output in variable
       ansible.builtin.set_fact:
-        ec2-output1: "{{ec2-output}}"
+        ec2_output1: "{{ec2_output}}"
 
     
     - name: Write ec2_output to local JSON file
