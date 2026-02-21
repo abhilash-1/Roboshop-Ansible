@@ -52,12 +52,15 @@
       amazon.aws.route53:
         state: present
         zone: "{{hosted_zone}}"
-        record: "{{item.item}}-{{env}}"
-        value: "{{instance[0].private_ip_address}}"
+        record: "{{item.item}}-{{env}}.{{hosted_zone}}"
+        value: "{{instances[0].private_ip_address}}"
         ttl: 1
         type: A
-        loop: "{{ec2_output.results}}"
-        when: action=="create"
+        overwrite: true
+        wait: false
+      loop: "{{ec2_output.results}}"
+      when: action=="create"
+
       register: r53_output
 
     - name: output of r53 records
@@ -68,13 +71,19 @@
       amazon.aws.route53:
         state: present
         zone: "{{hosted_zone}}"
-        record: "{{item.item}}-{{env}}"
-        value: "{{instance[0].public_ip_address}}"
+        record: "{{item.item}}-{{env}}.{{hosted_zone}}"
+        value: "{{instances[0].public_ip_address}}"
         ttl: 1
         type: A
-        loop: "{{ec2_output.results}}"
-        when: 
-        - action=="create"
-        - item.item==frontend
+        overwrite: true
+        wait: false
+      loop: "{{ec2_output.results}}"
+      when: 
+      - action=="create"
+      - item.item==frontend
       register: r53_output
+
+    - name: output of r53 records
+      ansible.builtin.debug:
+        msg: "{{r53_output}}"
 
