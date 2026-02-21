@@ -1,0 +1,29 @@
+- name: Creating instances
+  hosts: all
+  connection: ssh
+  vars:
+    instances:
+      - "mongodb"
+      - "catalogue"
+    env: dev
+    sg_id: sg-07afeb4dfbab74912
+    ami_id: ami-0220d79f3f480ecf5
+  tasks:
+    - name: Instance
+      ansible.builtin.debug:
+        msg: "Creating {{item}}"
+      loop: "{{instances}}"
+    - name: Instance
+      amazon.aws.ec2_instance:
+        name: "{{item}}-{{env}}"
+        security_group: "{{sg_id}}"
+        image_id: "{{ami_id}}"
+        instance_type: t3.micro
+        tags:
+          Environment: "{{env}}"
+          Project: Roboshop
+          user: system
+        wait: true
+        
+          
+      
