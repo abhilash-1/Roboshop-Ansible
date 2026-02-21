@@ -2,7 +2,7 @@
   hosts: all
   connection: ssh
   vars:
-    instances:
+    instance:
       - "mongodb"
       - "catalogue"
     env: dev
@@ -15,19 +15,19 @@
     - name: Instance
       ansible.builtin.debug:
         msg: "Creating {{item}}"
-      loop: "{{instances}}"
+      loop: "{{instance}}"
 
     - name: selecting sg_id based on server
       ansible.builtin.set_fact:
         sg: "{{frontend_sg_id}}"
       when: item=="frontend"
-      loop: "{{instances}}"
+      loop: "{{instance}}"
 
     - name: selecting sg_id based on server 1
       ansible.builtin.set_fact:
         sg: "{{sg_id}}"
       when: item != "frontend"
-      loop: "{{instances}}"
+      loop: "{{instance}}"
 
     - name: Instance creation
       amazon.aws.ec2_instance:
@@ -40,7 +40,7 @@
           Project: Roboshop
           user: system
         wait: true
-      loop: "{{instances}}"
+      loop: "{{instance}}"
       register: ec2_output
       when: action == "create"
 
