@@ -39,9 +39,9 @@
           user: system
         wait: true
       loop: "{{instances}}"
-      register: ec2-output
+      register: ec2_output
       when: action == "create"
 
-    - name: Print ec2-output
+    - name: Print ec2_output
       ansible.builtin.debug:
-        msg: "{{ec2-output}}"
+        msg: "{{ec2_output}}"
