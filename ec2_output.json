@@ -1,5 +1,4 @@
  {
-    "msg": {
         "changed": false,
         "msg": "All items completed",
         "results": [
@@ -468,4 +467,4 @@
         ],
         "skipped": false
     }
-}
+
