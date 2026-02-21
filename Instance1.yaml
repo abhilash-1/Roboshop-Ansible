@@ -19,17 +19,17 @@
     - name: selecting sg_id based on server
       ansible.builtin.set_fact:
         sg: "{{frontend_sg_id:}}"
-      when: item=="frontend"
+      when: instances[0]=="frontend"
 
     - name: selecting sg_id based on server 1
       ansible.builtin.set_fact:
         sg: "{{sg_id}}"
-      when: item != "frontend"
+      when: instances[0] != "frontend"
 
     - name: Instance creation
       amazon.aws.ec2_instance:
         name: "{{item}}-{{env}}"
-        security_group: "{{sg_id}}"
+        security_group: "{{sg}}"
         image_id: "{{ami_id}}"
         instance_type: t3.micro
         tags:
