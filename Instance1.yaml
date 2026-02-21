@@ -10,6 +10,7 @@
     frontend_sg_id: sg-062dd749ba63aac5e
     ami_id: ami-0220d79f3f480ecf5
     action: create
+    hosted_zone: 100pushups.online
   tasks:
     - name: Instance
       ansible.builtin.debug:
@@ -38,11 +39,9 @@
           user: system
         wait: true
       loop: "{{instances}}"
-      # register: ec2-output
-      when: 
-      - action == "create"
+      register: ec2-output
+      when: action == "create"
 
-    
-
-          
-      
+    - name: Print ec2-output
+      ansible.builtin.debug:
+        msg: "{{ec2-output}}"
