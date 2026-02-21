@@ -7,13 +7,26 @@
       - "catalogue"
     env: dev
     sg_id: sg-07afeb4dfbab74912
+    frontend_sg_id: sg-062dd749ba63aac5e
     ami_id: ami-0220d79f3f480ecf5
+    action: create
   tasks:
     - name: Instance
       ansible.builtin.debug:
         msg: "Creating {{item}}"
       loop: "{{instances}}"
-    - name: Instance
+
+    - name: selecting sg_id based on server
+      ansible.builtin.set_fact:
+        sg: "{{frontend_sg_id:}}"
+      when: item=="frontend"
+
+    - name: selecting sg_id based on server 1
+      ansible.builtin.set_fact:
+        sg: "{{sg_id}}"
+      when: item != "frontend"
+
+    - name: Instance creation
       amazon.aws.ec2_instance:
         name: "{{item}}-{{env}}"
         security_group: "{{sg_id}}"
@@ -24,6 +37,11 @@
           Project: Roboshop
           user: system
         wait: true
-        
+      register: ec2-output
+      when: 
+      - action == "create"
+
+    
+
           
       
