@@ -37,6 +37,7 @@
           Project: Roboshop
           user: system
         wait: true
+      loop: "{{instances}}"
       register: ec2-output
       when: 
       - action == "create"
