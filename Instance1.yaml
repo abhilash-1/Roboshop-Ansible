@@ -19,13 +19,15 @@
 
     - name: selecting sg_id based on server
       ansible.builtin.set_fact:
-        sg: "{{frontend_sg_id:}}"
-      when: instances[0]=="frontend"
+        sg: "{{frontend_sg_id}}"
+      when: item=="frontend"
+      loop: "{{instances}}"
 
     - name: selecting sg_id based on server 1
       ansible.builtin.set_fact:
         sg: "{{sg_id}}"
-      when: instances[0] != "frontend"
+      when: item != "frontend"
+      loop: "{{instances}}"
 
     - name: Instance creation
       amazon.aws.ec2_instance:
@@ -49,7 +51,7 @@
     - name: Creating R53 records
       amazon.aws.route53:
         state: present
-        zone: "{{hosted_zone:}}"
+        zone: "{{hosted_zone}}"
         record: "{{item.item}}-{{env}}"
         value: "{{instance[0].private_ip_address}}"
         ttl: 1
@@ -65,7 +67,7 @@
     - name: Creating R53 records
       amazon.aws.route53:
         state: present
-        zone: "{{hosted_zone:}}"
+        zone: "{{hosted_zone}}"
         record: "{{item.item}}-{{env}}"
         value: "{{instance[0].public_ip_address}}"
         ttl: 1
